@@ -14,33 +14,29 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">🚀 Simulador Animado de Trayectorias Parabólicas</p>', unsafe_allow_html=True)
-# Información del equipo
+with st.expander("🎓 Datos del equipo | Grupo 505 · Equipo 6"):
 st.markdown("""
-    <div style="
-        background-color: #1E293B;
-        border-left: 5px solid #00E5FF;
-        padding: 18px 24px;
-        border-radius: 10px;
-        margin: 15px 0 25px 0;
-        color: #FFFFFF;
-    ">
-        <h3 style="color: #00E5FF; margin-top: 0;">
-            🎓 Datos del equipo
-        </h3>
-        <p><b>GRUPO:</b> 505</p>
-        <p><b>CARRERA:</b> Programación</p>
-        <p><b>EQUIPO:</b> 6</p>
-        <hr style="border-color: #475569;">
-        <p><b>INTEGRANTES:</b></p>
-        <ol>
-            <li>Castillo Aguilar Dylan Jonathan</li>
-            <li>Cerecero García Aline Arizbeth</li>
-            <li>González Rojas Jael Abigail</li>
-            <li>Maya Zavala Angel De Jesus</li>
-            <li>Salazar Bello Maria Fernanda</li>
-            <li>Salvador Martinez Cristian Eduardo</li>
-        </ol>
-    </div>
+<div style="
+     background-color: #1E293B;
+     border-left: 5px solid #00E5FF;
+     padding: 18px 24px;
+     border-radius: 10px;
+     color: #FFFFFF;
+ ">
+<p><b>GRUPO:</b> 505</p>
+<p><b>CARRERA:</b> Programación</p>
+<p><b>EQUIPO:</b> 6</p>
+<hr style="border-color: #475569;">
+<p><b>INTEGRANTES:</b></p>
+<ol>
+<li>Castillo Aguilar Dylan Jonathan</li>
+<li>Cerecero García Aline Arizbeth</li>
+<li>González Rojas Jael Abigail</li>
+<li>Maya Zavala Angel De Jesus</li>
+<li>Salazar Bello Maria Fernanda</li>
+<li>Salvador Martinez Cristian Eduardo</li>
+</ol>
+</div>
 """, unsafe_allow_html=True)
 st.write("Ajusta los parámetros y presiona el botón **▶ Reproducir** en el gráfico para ver el movimiento.")
 

@@ -2,17 +2,14 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 
-# Configuración de la página
 st.set_page_config(
     page_title="Simulador de Trayectoria",
     page_icon="📡",
     layout="wide"
 )
 
-# --- CSS PERSONALIZADO (ESTILO MINIMALISTA Y AFILADO) ---
 st.markdown("""
     <style>
-    /* Fondo de estrellas (Puedes cambiar la URL por tu propio archivo local) */
     .stApp {
         background-image: url("https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1920&auto=format&fit=crop");
         background-size: cover;
@@ -20,13 +17,11 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Tipografía y colores generales */
     h1, h2, h3, p, div {
         color: #E2E8F0 !important;
         font-family: 'Roboto Mono', monospace !important;
     }
 
-    /* Título principal sin emojis excesivos */
     .main-title {
         font-size: 28px !important;
         font-weight: 700;
@@ -37,11 +32,10 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* Bordes afilados para los paneles */
     [data-testid="stExpander"] {
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 0px !important; /* Bordes afilados */
-        background-color: rgba(15, 23, 42, 0.8) !important; /* Fondo oscuro semitransparente */
+        border-radius: 0px !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
         backdrop-filter: blur(5px);
     }
 
@@ -52,7 +46,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Estilo para las métricas */
     [data-testid="stMetricValue"] {
         color: #FFFFFF !important;
         font-family: 'Roboto Mono', monospace !important;
@@ -61,16 +54,13 @@ st.markdown("""
         color: #94A3B8 !important;
     }
 
-    /* Ocultar el menú de Streamlit y el footer para un look más limpio */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
 
-# Título principal
 st.markdown('<p class="main-title">Simulador de Trayectorias Parabólicas</p>', unsafe_allow_html=True)
 
-# Información del equipo (Estilo Terminal)
 with st.expander("Datos del equipo | Grupo 505 · Equipo 6"):
     st.markdown("""
         <div style="
@@ -93,9 +83,8 @@ with st.expander("Datos del equipo | Grupo 505 · Equipo 6"):
         </div>
     """, unsafe_allow_html=True)
 
-st.write("Ajusta los parámetros y presiona **▶ Reproducir** en el gráfico.")
+st.write("Ajusta los parámetros y presiona **▶ PLAY** en el gráfico.")
 
-# Controles de la barra lateral
 with st.sidebar:
     st.header("Parámetros")
     
@@ -103,24 +92,19 @@ with st.sidebar:
     angulo = st.slider("Ángulo de lanzamiento (°)", 0.0, 90.0, 45.0, step=1.0)
     h0 = st.slider("Altura inicial (m)", 0.0, 50.0, 0.0, step=1.0)
 
-# Cálculos físicos
 g = 9.81
 theta = np.radians(angulo)
 
 v0x = v0 * np.cos(theta)
 v0y = v0 * np.sin(theta)
 
-# Tiempo de vuelo
 t_vuelo = (v0y + np.sqrt(v0y**2 + 2 * g * h0)) / g
 if t_vuelo <= 0:
     t_vuelo = 0.1
 
-# Datos de la trayectoria
 t = np.linspace(0, t_vuelo, 120)
 x = v0x * t
 y = h0 + v0y * t - 0.5 * g * t**2
-
-# --- CONFIGURACIÓN DEL GRÁFICO (ESTILO MINIMALISTA) ---
 
 frames = []
 for i in range(len(t)):
@@ -135,7 +119,7 @@ for i in range(len(t)):
                 go.Scatter(
                     x=x[:i + 1], y=y[:i + 1],
                     mode="lines",
-                    line=dict(color="#38BDF8", width=2, shape="spline") # Azul sobrio, no neón
+                    line=dict(color="#38BDF8", width=2, shape="spline")
                 )
             ],
             name=f"frame{i}"
@@ -165,15 +149,13 @@ fig = go.Figure(
     ],
     layout=go.Layout(
         template="plotly_dark",
-        # HACER EL FONDO TRANSPARENTE PARA VER LAS ESTRELLAS
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        
+        paper_bgcolor='rgba(10, 15, 25, 0.65)',
+        plot_bgcolor='rgba(10, 15, 25, 0.65)',
         font=dict(family="Roboto Mono, monospace", color="#E2E8F0"),
         xaxis=dict(
             title="Distancia horizontal (m)",
             showgrid=True,
-            gridcolor='rgba(255, 255, 255, 0.05)', # Cuadrícula muy tenue
+            gridcolor='rgba(255, 255, 255, 0.05)',
             zeroline=False
         ),
         yaxis=dict(
@@ -214,15 +196,12 @@ fig = go.Figure(
 fig.update_yaxes(range=[0, max(y) * 1.2 if max(y) > 0 else 10])
 fig.update_xaxes(range=[0, max(x) * 1.05 if max(x) > 0 else 10])
 
-# Mostrar el gráfico
 st.plotly_chart(fig, use_container_width=True)
 
-# Resultados de la simulación
 st.markdown("### Métricas de Vuelo")
 
 col1, col2, col3 = st.columns(3)
 
-# Inyectamos un pequeño estilo CSS para las métricas
 st.markdown("""
     <style>
     [data-testid="stMetric"] {

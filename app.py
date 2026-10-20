@@ -95,16 +95,27 @@ with st.sidebar:
 g = 9.81
 theta = np.radians(angulo)
 
-v0x = v0 * np.cos(theta)
-v0y = v0 * np.sin(theta)
+# Redondeo para evitar errores de punto flotante (ej. cos(90°) ≈ 6e-17)
+v0x = round(v0 * np.cos(theta), 10)
+v0y = round(v0 * np.sin(theta), 10)
 
 t_vuelo = (v0y + np.sqrt(v0y**2 + 2 * g * h0)) / g
-if t_vuelo <= 0:
-    t_vuelo = 0.1
 
-t = np.linspace(0, t_vuelo, 120)
-x = v0x * t
-y = h0 + v0y * t - 0.5 * g * t**2
+if t_vuelo <= 1e-9:
+    # Ángulo 0° y altura 0 m: el proyectil no despega
+    st.warning("Con ángulo 0° y altura inicial 0 m el proyectil no despega. Aumenta el ángulo o la altura.")
+    t_vuelo = 0.0
+    t = np.linspace(0, 0.1, 120)
+    x = np.zeros_like(t)
+    y = np.zeros_like(t)
+else:
+    t = np.linspace(0, t_vuelo, 120)
+    x = v0x * t
+    y = h0 + v0y * t - 0.5 * g * t**2
+    y = np.maximum(y, 0.0)  # evita valores negativos por redondeo
+
+x_max = max(x.max() * 1.05, 10)
+y_max = max(y.max() * 1.2, 10)
 
 frames = []
 for i in range(len(t)):
@@ -141,7 +152,7 @@ fig = go.Figure(
             name="Trayectoria total"
         ),
         go.Scatter(
-            x=[0, max(x) * 1.1 if max(x) > 0 else 10], y=[0, 0],
+            x=[0, x_max], y=[0, 0],
             mode="lines",
             line=dict(color="rgba(255, 255, 255, 0.4)", width=1, dash="dash"),
             name="Suelo"
@@ -162,7 +173,9 @@ fig = go.Figure(
             title="Altura (m)",
             showgrid=True,
             gridcolor='rgba(255, 255, 255, 0.05)',
-            zeroline=False
+            zeroline=False,
+            scaleanchor="x",   # misma escala en X e Y para que los ángulos se vean reales
+            scaleratio=1
         ),
         margin=dict(l=40, r=20, t=40, b=40),
         updatemenus=[
@@ -193,8 +206,8 @@ fig = go.Figure(
     frames=frames
 )
 
-fig.update_yaxes(range=[0, max(y) * 1.2 if max(y) > 0 else 10])
-fig.update_xaxes(range=[0, max(x) * 1.05 if max(x) > 0 else 10])
+fig.update_yaxes(range=[0, y_max])
+fig.update_xaxes(range=[0, x_max])
 
 st.plotly_chart(fig, use_container_width=True)
 
@@ -214,5 +227,5 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 col1.metric("Tiempo de vuelo", f"{t_vuelo:.2f} s")
-col2.metric("Altura máxima", f"{max(y):.2f} m")
-col3.metric("Alcance máximo", f"{max(x):.2f} m")
+col2.metric("Altura máxima", f"{y.max():.2f} m")
+col3.metric("Alcance máximo", f"{x.max():.2f} m")
